@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,9 @@
     <link rel="shortcut icon" href="../img/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="../css/pico.min.css">
     <link rel="stylesheet" href="../css/style.css">
+    <script defer src="../script.js"></script>
 </head>
+
 <body>
     <header class="site-header">
         <nav class="site-nav">
@@ -36,13 +39,148 @@
         <h1>
             Level 0-4
         </h1>
-        
+
+        <div class="article-content">
+            <p>
+                Levels from Level 0 to 4 focuses on basic linux navigation.
+                To login we can:
+            </p>
+            <div class="code-block">
+
+                <div class="code-header">
+                    <span class="code-language">shell</span>
+
+                    <button class="copy-btn">
+                        Copy
+                    </button>
+                </div>
+
+                <pre><code>
+                $ ssh banditX@bandit.labs.overthewire.org -p 2220
+                </code></pre>
+
+            </div>
+
+            <h2>Level 0</h2>
+            <p>This level simply requires us to read the contents of the readme file in the home directory. For this purpose
+                we can use `cat` command which concatenate files and print the output in std output.</p>
+            <div class="code-block">
+
+                <div class="code-header">
+                    <span class="code-language">shell</span>
+
+                    <button class="copy-btn">
+                        Copy
+                    </button>
+                </div>
+                <pre><code>
+                $ cat readme
+                </code></pre>
+
+            </div>
+
+            <h2>Level 1</h2>
+            <p>This level requires us to access a file whose name is "-". The challenge here is that most commands
+                interpret - as the beginning of an option or flag. So to workaround it we use the relative path to
+                directly access the file.</p>
+            <div class="code-block">
+
+                <div class="code-header">
+                    <span class="code-language">shell</span>
+
+                    <button class="copy-btn">
+                        Copy
+                    </button>
+                </div>
+                <pre><code>
+                $ cat ./-
+                </code></pre>
+
+            </div>
+
+            <h2>Level 2</h2>
+            <p>This level requires us to access a file whose name contains spaces. Normally, spaces are used as
+                separators. But instead here we place a '\' before space so that the space is treated as a literal not as
+                separator.</p>
+
+            <div class="code-block">
+
+                <div class="code-header">
+                    <span class="code-language">shell</span>
+
+                    <button class="copy-btn">
+                        Copy
+                    </button>
+                </div>
+                <pre><code>
+                $ cat ./--spaces\ in\ this\ filename--
+                </code></pre>
+
+            </div>
+
+            <h2>Level 3</h2>
+            <p>This level requires us to access a hidden file. In linux, a file beginning with "." makes it a hidden
+                file. To list hidden files we can:</p>
+
+            <div class="code-block">
+
+                <div class="code-header">
+                    <span class="code-language">shell</span>
+
+                    <button class="copy-btn">
+                        Copy
+                    </button>
+                </div>
+                <pre><code>
+                $ ls -a
+                </code></pre>
+
+            </div>
+            <p>Here the -a flag specifies to list hidden files as well. One observation would be that along with hidden
+                files we also see "." and "..". This is because everything in linux is treated as a file. The single and
+                double dot are references to the current and one level up directory respectively.</p>
+
+            <div class="code-block">
+
+                <div class="code-header">
+                    <span class="code-language">shell</span>
+
+                    <button class="copy-btn">
+                        Copy
+                    </button>
+                </div>
+                <pre><code>
+                $ cat ./inhere/...Hiding-From-You
+                </code></pre>
+
+            </div>
+            
+            <h2>Level 4</h2>
+            <p>This level requires us to find a file from a list of files where that particular file is of text type. We use the file command which describes the file type and we pipe it to grep which finds and matches patterns. Piping means sending the output of one command to input of another command.</p>
+
+            <div class="code-block">
+
+                <div class="code-header">
+                    <span class="code-language">shell</span>
+
+                    <button class="copy-btn">
+                        Copy
+                    </button>
+                </div>
+                <pre><code>
+                $ file ./inhere/-file0* | grep "ASCII text"
+                </code></pre>
+
+            </div>
+        </div>
+
     </main>
 
     <footer class="site-footer">
-            <p>
-                Made with ❤️ by <a href="https://github.com/p4th4k">p4th4k</a>
-            </p>
-        </footer>
+        <p>
+            Made with ❤️ by <a href="https://github.com/p4th4k">p4th4k</a>
+        </p>
+    </footer>
 </body>
+
 </html>

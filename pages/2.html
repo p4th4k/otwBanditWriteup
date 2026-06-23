@@ -7,6 +7,7 @@
     <link rel="shortcut icon" href="../img/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="../css/pico.min.css">
     <link rel="stylesheet" href="../css/style.css">
+    <script defer src="../script.js"></script>
 </head>
 <body>
     <header class="site-header">
@@ -36,6 +37,207 @@
         <h1>
             Level 10-14
         </h1>
+
+        <div class="article-content">
+            <p>Levels from Level 10 to 14 explores encryption and basic networking.</p>
+            <h2>Level 10</h2>
+            <p>This level requires us to decode base64 to get the password.</p>
+            <p>Base64 is an encoding scheme that takes binary data and represents it using 64 printable characters. It processes the input in chunks of 24 bits (3 bytes), splits each 24-bit chunk into four 6-bit groups, and maps each 6-bit group to one of 64 characters. If the input length is not a multiple of 3 bytes, padding characters (=) may be added to make the output length a multiple of 4 characters.</p>
+            <div class="code-block">
+
+                <div class="code-header">
+                    <span class="code-language">shell</span>
+
+                    <button class="copy-btn">
+                        Copy
+                    </button>
+                </div>
+
+                <pre><code>
+                $ base64 data.txt -d
+                </code></pre>
+
+            </div>
+
+            <h2>Level 11</h2>
+            <p>This level requires us to decrypt a rot13 encoding.</p>
+            <p>Rot 13 refers to a cipher where every alphabet is replaced by an alphabet which is 13 positions ahead of the current alphabet. There exists multiple approaches but for now we use python to solve this: </p>
+
+            <div class="code-block">
+
+                <div class="code-header">
+                    <span class="code-language">shell</span>
+
+                    <button class="copy-btn">
+                        Copy
+                    </button>
+                </div>
+
+                <pre><code>
+                $ python3 -c "import codecs; print(codecs.encode('data', 'rot13'))"
+                </code></pre>
+
+            </div>
+
+            <p>Another approach would be to use `tr` which is short for translate which translates stdin from one format to other.</p>
+
+            <div class="code-block">
+
+                <div class="code-header">
+                    <span class="code-language">shell</span>
+
+                    <button class="copy-btn">
+                        Copy
+                    </button>
+                </div>
+
+                <pre><code>
+                $ echo "text" | tr 'A-Za-z' 'N-ZA-Mn-za-m'
+                </code></pre>
+
+            </div>
+
+            <p>In this, tr replaces characters listed in first string with corresponding character from second string. The first string 'A-Za-z' corresponds to 'ABCD...XYZabcd...xyz' total 52 characters and in the second string 'N-ZA-Mn-za-m' corresponds to 'NOPQ...XYZABCD...IJKLMnopq...xyzabc...jklm'.</p>
+
+            <h2>Level 12</h2>
+            <p>This level requires us to reverse a hexdump and deal with the file obtained.</p>
+
+            <p>First we reverse the hexdump using xxd command. A hexdump is a human-readable, textual representation of computer data where each byte of binary data is displayed as a two-digit hexadecimal number</p>
+
+            <div class="code-block">
+
+                <div class="code-header">
+                    <span class="code-language">shell</span>
+
+                    <button class="copy-btn">
+                        Copy
+                    </button>
+                </div>
+
+                <pre><code>
+                $ xxd -r data.txt new1
+                </code></pre>
+
+            </div>
+
+            <p>Now using file we find out that the file is a compressed gzip file. To decompress we use gzip and to do that we need to first rename the file so that gzip can work with it.</p>
+
+            <div class="code-block">
+
+                <div class="code-header">
+                    <span class="code-language">shell</span>
+
+                    <button class="copy-btn">
+                        Copy
+                    </button>
+                </div>
+
+                <pre><code style="line-height: 1.5 !important;">
+                $ mv new1 new1.gz
+                $ gzip -d new1.gz
+                </code></pre>
+
+            </div>
+
+            <p>This cycle of finding out the file type and renaming it accordingly ( read the man pages! ).</p>
+
+            <div class="code-block">
+
+                <div class="code-header">
+                    <span class="code-language">shell</span>
+
+                    <button class="copy-btn">
+                        Copy
+                    </button>
+                </div>
+
+                <pre><code style="line-height: 1.5 !important;">
+                $ bzip -d new.bz
+                $ gzip -d new1.gz
+                $ tar -x -f new1.tar 
+                $ tar -x -f data5.bin 
+                $ bzip2 -d data6.bz
+                $ tar -x -f data6
+                $ gzip -d data8.gz
+                $ cat data8
+                </code></pre>
+
+            </div>
+
+            <h2>Level 13</h2>
+            <p>This level requires us to copy the private key to our local machine and use it to ssh into the next level and access the file from /etc/bandit_pass/bandit14</p>
+            <p>To accomplish this we use scp aka secure copy which in a secure manner, same as in ssh, from source to destination.</p>
+
+            <div class="code-block">
+
+                <div class="code-header">
+                    <span class="code-language">shell</span>
+
+                    <button class="copy-btn">
+                        Copy
+                    </button>
+                </div>
+
+                <pre><code>
+                $ scp -P 2220 bandit13@bandit.labs.overthewire.org:/home/bandit13/sshkey.private
+                </code></pre>
+
+            </div>
+
+            <p>Now if we try to use this to ssh into the next level, we would get an error due to security reasons.This is because ssh wont let us use that key to login because other users can access this key. To fix this we change the permission so that other users except us cannot read or write to it.</p>
+
+            <div class="code-block">
+
+                <div class="code-header">
+                    <span class="code-language">shell</span>
+
+                    <button class="copy-btn">
+                        Copy
+                    </button>
+                </div>
+
+                <pre><code>
+                $ chmod 600 sshkey.private
+                </code></pre>
+
+            </div>
+            <p>( read the man pages! )</p>
+
+            <div class="code-block">
+
+                <div class="code-header">
+                    <span class="code-language">shell</span>
+
+                    <button class="copy-btn">
+                        Copy
+                    </button>
+                </div>
+
+                <pre><code>
+                $ ssh bandit14@bandit.labs.overthewire.org -p 2220 -i sshkey.private
+                </code></pre>
+
+            </div>
+
+            <h2>Level 14</h2>
+            <p>This level requires us to submit the password of the current level to port 30000 to localhost. To do this we use the netcat or nc utility which would open an connection to that port and send the data to it. ( to learn more about it, refer to the <a href="https://overthewire.org/wargames/bandit/bandit15.html">helpful reading material</a> on the otw page. )</p>
+
+            <div class="code-block">
+
+                <div class="code-header">
+                    <span class="code-language">shell</span>
+
+                    <button class="copy-btn">
+                        Copy
+                    </button>
+                </div>
+
+                <pre><code>
+                $ nc localhost 30000
+                </code></pre>
+
+            </div>
+        </div>
     </main>
     <footer class="site-footer">
             <p>

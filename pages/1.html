@@ -7,6 +7,7 @@
     <link rel="shortcut icon" href="../img/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="../css/pico.min.css">
     <link rel="stylesheet" href="../css/style.css">
+    <script defer src="../script.js"></script>
 </head>
 <body>
     <header class="site-header">
@@ -36,6 +37,140 @@
         <h1>
             Level 5-9
         </h1>
+
+        <div class="article-content">
+            <p>Levels from Level 5 to 9 focuses on basic techniques to find and sort things based on properties.</p>
+
+            <h2>Level 5</h2>
+            <p>This level requires us to find a file among files which is human readable, 1033 bytes in size and not executable. To do this we can use the find command.</p>
+
+            <div class="code-block">
+
+                <div class="code-header">
+                    <span class="code-language">shell</span>
+
+                    <button class="copy-btn">
+                        Copy
+                    </button>
+                </div>
+
+                <pre><code>
+                $ find * -size 1033c
+                </code></pre>
+
+            </div>
+            <p>In the above command, we sort using only 1033 bytes file size. Explore the rest of options by reading the man pages!</p>
+
+            <div class="code-block">
+
+                <div class="code-header">
+                    <span class="code-language">shell</span>
+
+                    <button class="copy-btn">
+                        Copy
+                    </button>
+                </div>
+
+                <pre><code>
+                $ man find
+                </code></pre>
+
+            </div>
+
+            <h2>Level 6</h2>
+            <p>This level is similar to the previous level, except here we sort on the basis of user, group and size.</p>
+            <div class="code-block">
+
+                <div class="code-header">
+                    <span class="code-language">shell</span>
+
+                    <button class="copy-btn">
+                        Copy
+                    </button>
+                </div>
+
+                <pre><code>
+                $ find / -user bandit7 -group bandit6 -size 33c
+                </code></pre>
+
+            </div>
+
+            <h2>Level 7</h2>
+            <p>This level requires us to find the password by finding the word millionth in the file.</p>
+            <div class="code-block">
+
+                <div class="code-header">
+                    <span class="code-language">shell</span>
+
+                    <button class="copy-btn">
+                        Copy
+                    </button>
+                </div>
+
+                <pre><code>
+                $ cat data.txt | grep "millionth"
+                </code></pre>
+
+            </div>
+            <p>Again, we use piping here. Where we take all the text and find the word millionth in the output which revals the password.</p>
+
+            <h2>Level 8</h2>
+            <p>This level requires us to find the line which occurs exactly only once. We could use the `uniq` command to find the line but there is one problem, uniq checks one word before and after the current word. So if the text is as follows:</p>
+            <div class="code-block">
+
+                <div class="code-header">
+                    <span class="code-language">text</span>
+
+                    <button class="copy-btn">
+                        Copy
+                    </button>
+                </div>
+
+                <pre><code style="line-height: 1.5 !important;">
+                apple
+                banana
+                orange
+                apple
+                banana
+                </code></pre>
+            </div>
+            <p>Then uniq wont be able to identify the uniqe lines. So we first sort the file and then pipe the sorted output to uniq.</p>
+            <div class="code-block">
+
+                <div class="code-header">
+                    <span class="code-language">shell</span>
+
+                    <button class="copy-btn">
+                        Copy
+                    </button>
+                </div>
+
+                <pre><code>
+                $ sort data.txt | uniq -u
+                </code></pre>
+
+            </div>
+            <p>Why -u? Read the man pages!</p>
+
+            <h2>Level 9</h2>
+            <p>This level requires us to find a set of few human readable strings, preceeded by "=" characters. To accomplish this we would use the strings command which by default scans the file and returns any human-readble text string that is at least 4 characters long and end ends with a null or newline character.</p>
+
+            <div class="code-block">
+
+                <div class="code-header">
+                    <span class="code-language">shell</span>
+
+                    <button class="copy-btn">
+                        Copy
+                    </button>
+                </div>
+
+                <pre><code>
+                $ strings data.txt | grep "==="
+                </code></pre>
+
+            </div>
+        </div>
     </main>
     <footer class="site-footer">
             <p>
