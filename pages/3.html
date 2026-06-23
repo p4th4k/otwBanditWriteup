@@ -37,6 +37,116 @@
         <h1>
             Level 15-19
         </h1>
+
+        <div class="article-content">
+            <p>Levels from Level 15 to 19 focuses on networking concepts.</p>
+
+            <h2>Level 15</h2>
+            <p>This level is similar to Level 14 expcept we have to use SSL/TLS encryption to establish the connection to port 30001 on localhost.</p>
+            <p>In SSL/TLS encryption, there is a trusted certificate issuing authoritity. The server pays the server to issue an ceritifcate which consists of meta data of server along with a sign which consists of servers public key and issuing authoritity private key.</p>
+
+            <p>When client connects it recives the certificate, and using the issuing authoritity public key verifies the signature. And then using their own public key they use a mathematical algorithm to generate a shared key which would be used for symmetric encryption of data.</p>
+
+            <p>In spirit, this is how TLS works except more advanced mathematical algorithms are used</p>
+
+            <div class="code-block">
+
+                <div class="code-header">
+                    <span class="code-language">shell</span>
+
+                    <button class="copy-btn">
+                        Copy
+                    </button>
+                </div>
+
+                <pre><code>
+                $ openssl s_client -connect localhost:30001
+                </code></pre>
+
+            </div>
+
+            <h2>Level 16</h2>
+            <p>This level requires us to identify the correct port based on certain properties and submit the current password to that port using TLS encryption.</p>
+            <p>To perform this we use nmap:</p>
+
+            <div class="code-block">
+
+                <div class="code-header">
+                    <span class="code-language">shell</span>
+
+                    <button class="copy-btn">
+                        Copy
+                    </button>
+                </div>
+
+                <pre><code>
+                $ nmap localhost -p31000-32000 -sV
+                </code></pre>
+
+            </div>
+
+            <p>Here -p is used to establish a range of ports and -sV is used to determine service version. Based on this we determine the correct port ( read the otw page ).</p>
+
+            <p>Now when we connect via tls encryption we encounter "KEYUPDATE" which means an update of the keys for the current TLS connection and this event is triggered by k or K ( K is used to force keyupdate ). To fix this we use a special flag -ign_eof</p>
+
+            <div class="code-block">
+
+                <div class="code-header">
+                    <span class="code-language">shell</span>
+
+                    <button class="copy-btn">
+                        Copy
+                    </button>
+                </div>
+
+                <pre><code>
+                $ openssl s_client localhost:31790 -ign_eof
+                </code></pre>
+
+            </div>
+
+            <h2>Level 17</h2>
+            <p>This level requires us to find the unique line of text in between two files. We use `diff` utility which compares two files line by line.</p>
+
+            <div class="code-block">
+
+                <div class="code-header">
+                    <span class="code-language">shell</span>
+
+                    <button class="copy-btn">
+                        Copy
+                    </button>
+                </div>
+
+                <pre><code>
+                $ diff password.new password.old
+                </code></pre>
+
+            </div>
+
+            <h2>Level 18</h2>
+            <p>This level requires us to read the readme file in home directory. The challenge being here is that .bashrc file is modified which causes one to logout as soon as they login.</p>
+            <p>The .bashrc is a special file which executes everytime we open a shell session. Whenever we login, a shell session is opened and the .bashrc file is executed which closes the connection.</p>
+            <p>To fix this, we use -t flag of ssh which allows us to execute command in a pseudo terminal. To read more about pseudo terminal click <a href="https://www.baeldung.com/linux/pty-vs-tty" target="_blank">here</a></p>
+
+            <div class="code-block">
+
+                <div class="code-header">
+                    <span class="code-language">shell</span>
+
+                    <button class="copy-btn">
+                        Copy
+                    </button>
+                </div>
+
+                <pre><code>
+                $ ssh bandit18@bandit.labs.overthewire.org -p 2220 -t "cat readme"
+                </code></pre>
+
+            </div>
+            <h2>Level 19</h2>
+            <p>Coming Soon!</p>
+        </div>
     </main>
     <footer class="site-footer">
             <p>
